@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Form Shit</title>
+    <style>
+
+    form {
+      width: 50%;
+      margin: 0 auto;
+      background-color: #ccc;
+      padding: 20px;
+    }
+    form h1, form input {
+      text-align: center;
+      margin: 20px auto 0;
+      display: block;
+      padding: 10px 0;
+      width: 52%;
+      border: none;
+    }
+    form label, form select {
+      width: 50%;
+      margin: 20px auto;
+      text-align: center;
+      display: block;
+    }
+    form button {
+      border: none;
+      margin: 0 auto;
+      color: white;
+      background-color: black;
+      padding: 10px 20px;
+      text-align: center;
+      display: block;
+      width: 30%;
+    }
+    .error {
+      width: inherit;
+      height: 20px;
+      margin: 0 auto;
+      border: 2px solid red;
+      background-color: pink;
+      padding: 5px;
+      text-align: center;
+    }
+    #submit, #branch {
+      margin: 20px auto;
+      width: 52%;
+    }
+    #branch {
+      height: 29px;
+    }
+    </style>
+
+  </head>
+  <body>
+    <form id="form">
+      <h1> Forms </h1>
+
+      <label for="first_name"> First Name </label>
+      <input id="first_name" value="" type="text" name="first_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" title="Please use only alpha-numeric characters" required />
+
+      <label for="last_name"> Last Name </label>
+      <input id="last_name" value="" name="last_name" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required/>
+
+      <label for="birth_date"> Birth Date </label>
+      <input id="birth_date" value="" type="text" min="4" max="4" name="birth_date" pattern="^\d{4}$" title="Please enter a 4-digit year" required/>
+
+      <label for="death_date"> Death Date </label>
+      <input id="death_date" value="" type="text" min="4" max="4" name="death_date" pattern="^\d{4}$" title="Please enter a 4-digit year" required>
+
+      <label for="branch"> Branch </label>
+      <select id="branch" value="" name="branch" required>
+        <option value="select branch"> Select Branch </option>
+        <option value="Air Force">Air Force and Air Force Reserve</option>
+        <option value="Air National Guard">Air National Guard</option>
+	      <option value="Army">Army and Army Reserve</option>
+        <option value="Army National Guard">Army National Guard</option>
+        <option value="Coast Guard">Coast Guard and Coast Guard Reserve</option>
+        <option value="Marines">Marine Corps and Marine Corps Reserve</option>
+			  <option value="Navy">Navy and Navy Reserve</option>
+      </select>
+
+      <label for="rank"> Rank </label>
+      <input id="rank" value="" name="rank" pattern="^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$" required/>
+
+      <button id="submit" type="submit"> Submit </button>
+    </form>
+
+    <script>
+
+      const militaryRanks = [
+        {rank: 'General'},
+        {rank: 'Major'},
+        {rank: 'Liutenant'},
+        {rank: 'Corporal'},
+        {rank: 'Ranger'},
+        {rank: 'Captain'},
+        {rank: 'Colonel'},
+        {rank: 'Admiral'},
+        {rank: 'Rear Admiral'},
+        {rank: 'Brigadier General'},
+        {rank: 'Sergeant Major'},
+        {rank: 'Master Sergeant'},
+        {rank: 'Lieutenant Commander'},
+        {rank: 'First Lieutenant'},
+        {rank: 'Fleet Admiral'},
+      ];
+
+      // Make quick references to our fields
+      const firstName =  document.getElementById('first_name');
+      const lastName =  document.getElementById('last_name');
+      const birthDate =  document.getElementById('birth_date');
+      const deathDate =  document.getElementById('death_date');
+      const branch =  document.getElementById('branch');
+      const rank =  document.getElementById('rank');
+      const submit = document.getElementById('submit');
+
+      const listRanks = militaryRanks.map(solider => solider.rank);
+      console.log(listRanks);
+
+      const matchRanks = (input) => {
+        console.log('Match Ranks');
+        console.log('input', input);
+        return militaryRanks.filter((solider) => {
+          //console.log(solider.rank);
+          if (solider.rank.match(input.value)) {
+            console.log('solider', solider.rank);
+            return solider.rank;
+          }
+          // if (solider.match(input)) {
+          //   return solider;
+          // }
+        });
+      }
+
+      const changeInput = (val) => {
+        console.log("Change INput");
+        const autoCompleteresult = matchRanks(val);
+        rank.innerHTML = autoCompleteresult;
+      }
+
+      // Gets all Form Inputs, not sure what to do from here.
+      const formInputs = () => {
+        const inputs = document.querySelectorAll('input, select');
+          for (index = 0; index < inputs.length; ++index) {
+            console.log(inputs[index]);
+          }
+      }
+
+      // Throws custom errors if Form Input is invalid
+      const validateFormElements = () => {
+        const form = document.forms['form'];
+        [].slice.call(form).forEach(function (el, i) {
+          console.log(el);
+          if (el.value !== '') {
+            return true;
+          } else if (el.value === true){
+            console.log(el.value);
+            el.classList.remove('error');
+          } else {
+            el.classList.add('error');
+          }
+        })
+      }
+
+      // Checks to see if date entered is before 1939
+      deathDate.addEventListener('input', () => {
+        const deathValue = 1939;
+        setTimeout(() => {
+          if ((deathDate.value < deathValue)) {
+            console.log('Please enter a date after 1939');
+          } else {
+            console.log('Thank you for your submission');
+          }
+        }, 1000);
+      });
+
+      // Checks to see if DOB entered is greater than 18
+      birthDate.addEventListener('input', () =>{
+        const currentDate = new Date().getFullYear();
+        setTimeout(() => {
+          if ((currentDate - birthDate.value) >= 18) {
+            alert('yes');
+          } else {
+            alert('too young');
+          }
+        }, 1000);
+      });
+
+
+      // Changes Branch and records the value
+      const changeBranch = (e) => {
+        // You can use “this” to refer to the selected element.
+        if (!e.target.value) {
+          alert('Please Select One');
+        } else {
+          const selected = e.target.value;
+          console.log(selected);
+        };
+      }
+
+      // event listeners
+
+      document.addEventListener('DOMContentLoaded', formInputs);
+
+      document.addEventListener('DOMContentLoaded', () => branch.onchange = changeBranch, false);
+
+      rank.addEventListener('input', changeInput);
+
+      submit.addEventListener('click', validateFormElements);
+
+    </script>
+  </body>
+</html>
